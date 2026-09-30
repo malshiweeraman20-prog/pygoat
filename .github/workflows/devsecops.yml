@@ -53,8 +53,7 @@ jobs:
         continue-on-error: true
 
       - name: Print finding count
-        run: |
-          python3 -c "import json; d=json.load(open('semgrep-results.json')); print('SEMGREP FINDINGS:', len(d['results']))"
+        run: echo "SEMGREP FINDINGS:" $(grep -o '"check_id"' semgrep-results.json | wc -l)
 
       - name: Upload results
         uses: actions/upload-artifact@v4
@@ -95,11 +94,12 @@ jobs:
         run: docker build -t pygoat:scan .
 
       - name: Trivy image scan
-        uses: aquasecurity/trivy-action@0.28.0
-        with:
-          image-ref: pygoat:scan
-          format: table
-          severity: CRITICAL,HIGH
-          ignore-unfixed: true
-          exit-code: '1'
+        run: >
+          docker run --rm
+          -v /var/run/docker.sock:/var/run/docker.sock
+          aquasec/trivy:latest image
+          --severity CRITICAL,HIGH
+          --ignore-unfixed
+          --exit-code 1
+          pygoat:scan
         continue-on-error: true
