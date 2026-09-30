@@ -26,7 +26,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import UserCreationForm
 from django.core import serializers
-from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden, JsonResponse
 from django.shortcuts import redirect, render
 from django.template import loader
 from django.template.loader import render_to_string
@@ -749,21 +749,13 @@ def a1_broken_access_lab_1(request):
         pass
     else:
         return redirect('login')
-    
+
     name = request.POST.get('name')
     password = request.POST.get('pass')
     print(password)
     print(name)
     if name:
-        if request.COOKIES.get('admin') == "1":
-            return render(
-                request, 
-                'Lab_2021/A1_BrokenAccessControl/broken_access_lab_1.html', 
-                {
-                    "data":"0NLY_F0R_4DM1N5",
-                    "username": "admin"
-                })
-        elif (name=='jack' and password=='jacktheripper'): # Will implement hashing here
+        if name == 'jack' and password == 'jacktheripper':
             html = render(
             request, 
             'Lab_2021/A1_BrokenAccessControl/broken_access_lab_1.html', 
@@ -838,6 +830,8 @@ def a1_broken_access_lab3_secret(request):
     if not request.user.is_authenticated:
         return redirect('login')
     # no checking applied here
+    if not request.user.is_staff:
+        return HttpResponseForbidden("Access Denied: Admins only.")
     return render(request, 'Lab_2021/A1_BrokenAccessControl/secret.html')
 
 
@@ -861,7 +855,7 @@ def injection_sql_lab(request):
         print(password)
 
         if name:
-            sql_query = "SELECT * FROM introduction_sql_lab_table WHERE id='"+name+"'AND password='"+password+"'"
+            sql_query = "SELECT * FROM introduction_sql_lab_table WHERE id=%s AND password=%s"
 
             sql_instance = sql_lab_table(id="admin", password="65079b006e85a7e798abecb99e47c154")
             sql_instance.save()
@@ -875,7 +869,7 @@ def injection_sql_lab(request):
             print(sql_query)
 
             try:
-                user = sql_lab_table.objects.raw(sql_query)
+                user = sql_lab_table.objects.raw(sql_query, [name, password])
                 user = user[0].id
                 print(user)
 
