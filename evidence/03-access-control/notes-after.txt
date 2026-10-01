@@ -1,0 +1,1 @@
+Fix applied: removed vulnerable 'if request.COOKIES.get(admin) == 1' check from a1_broken_access_lab_1() in views.py. Server now validates only username/password server-side. Re-tested: logged in as jack, manipulated admin cookie to 1, page still shows 'No Secret key for this User' - exploit blocked.

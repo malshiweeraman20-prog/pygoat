@@ -1,0 +1,1 @@
+Fix applied: removed |safe filter from xss_lab.html line 27, restoring Django auto-escaping. Same payload now renders as plain text, no popup.

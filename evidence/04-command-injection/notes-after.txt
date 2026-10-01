@@ -1,0 +1,1 @@
+Fix applied: changed command from string concatenation to list (['dig', domain]) and set shell=False in cmd_lab(). Re-tested exact same payload 'google.com | whoami' - pipe character treated as literal part of domain name, dig returned SERVFAIL, no command execution, no 'root' output.

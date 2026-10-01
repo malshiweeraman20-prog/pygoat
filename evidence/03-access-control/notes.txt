@@ -1,0 +1,1 @@
+Vulnerable code: a1_broken_access_lab3_secret() at views.py line 837. Comment in code literally says 'no checking applied here'. Checks authentication but not authorization (role/admin status).

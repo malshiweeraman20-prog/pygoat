@@ -1,0 +1,1 @@
+OS Command Injection confirmed: payload 'google.com | whoami' in domain field executed 'whoami' via shell=True in subprocess.Popen(). Output revealed container runs as 'root' user. Vulnerable code: introduction/views.py, function cmd_lab().

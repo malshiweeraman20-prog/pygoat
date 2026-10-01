@@ -1,0 +1,1 @@
+Fix applied: parameterized query with %s placeholders in views.py line 864 and 878. Re-tested exact same payload (admin / anything' OR '1'='1) - exploit blocked. Error message: Password doesn't match the username.
